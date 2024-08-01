@@ -1,0 +1,6 @@
+<Context>
+    <Resource name="jdbc/elite_real_estate_pos" auth="Container" type="javax.sql.DataSource"
+              maxTotal="10" maxIdle="8" maxWaitMillis="-1"
+              username="root" password="1234" driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/elite_real_estate_pos"/>
+</Context>
