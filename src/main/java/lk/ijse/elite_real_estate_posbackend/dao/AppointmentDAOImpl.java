@@ -42,4 +42,26 @@ public final class AppointmentDAOImpl implements AppointmentDAO {
         }
         return false;
     }
+
+    @Override
+    public AppointmentDTO searchAppointment(String appId, Connection connection) {
+        try {
+            AppointmentDTO appointmentDTO = new AppointmentDTO();
+            var ps = connection.prepareStatement("SELECT * FROM appointment WHERE appId=?");
+            ps.setString(1, appId);
+            var rst = ps.executeQuery();
+
+            while (rst.next()) {
+                appointmentDTO.setAppId(rst.getString("appId"));
+                appointmentDTO.setAdmId(rst.getString("admId"));
+                appointmentDTO.setCusName(rst.getString("cusName"));
+                appointmentDTO.setCusMobile(rst.getString("cusMobile"));
+                appointmentDTO.setDateTime(rst.getString("dateTime"));
+            }
+            return appointmentDTO;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

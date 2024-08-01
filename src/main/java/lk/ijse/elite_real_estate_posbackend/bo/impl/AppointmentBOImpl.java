@@ -18,4 +18,9 @@ public class AppointmentBOImpl implements AppointmentBO {
     public boolean updateAppointment(String appId, AppointmentDTO appointment, Connection connection) {
         return appointmentDAO.updateAppointment(appId, appointment, connection);
     }
+
+    @Override
+    public AppointmentDTO searchAppointment(String appId, Connection connection) {
+        return appointmentDAO.searchAppointment(appId, connection);
+    }
 }

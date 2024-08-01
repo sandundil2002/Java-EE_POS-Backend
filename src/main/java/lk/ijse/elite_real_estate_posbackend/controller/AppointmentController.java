@@ -68,4 +68,17 @@ public class AppointmentController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            Jsonb jsonb = JsonbBuilder.create();
+
+            var appointmentId = req.getParameter("appId");
+            resp.setContentType("application/json");
+            jsonb.toJson(appointmentBOImpl.searchAppointment(appointmentId,connection),writer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
