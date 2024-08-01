@@ -5,11 +5,4 @@ import jakarta.servlet.annotation.*;
 
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
-
-    public void init() {
-        String message = "Hello World!";
-    }
-
-    public void destroy() {
-    }
 }
