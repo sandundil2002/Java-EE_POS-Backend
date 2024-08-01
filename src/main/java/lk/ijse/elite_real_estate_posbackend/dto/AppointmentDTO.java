@@ -14,5 +14,5 @@ public class AppointmentDTO {
     private String admId;
     private String cusName;
     private String cusMobile;
-    private DateTimeFormatter dateTime;
+    private String dateTime;
 }
