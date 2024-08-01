@@ -24,7 +24,22 @@ public final class AppointmentDAOImpl implements AppointmentDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
+    }
+
+    @Override
+    public boolean updateAppointment(String appId, AppointmentDTO appointment, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("UPDATE appointment SET admId=?,cusName=?,cusMobile=?,dateTime=? WHERE appId=?");
+            ps.setString(1, appointment.getAdmId());
+            ps.setString(2, appointment.getCusName());
+            ps.setString(3, appointment.getCusMobile());
+            ps.setString(4, appointment.getDateTime());
+            ps.setString(5, appId);
+            return ps.executeUpdate() != 0;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -18,7 +18,9 @@ import java.sql.SQLException;
 
 @WebServlet(urlPatterns = "/appointment", loadOnStartup = 1)
 public class AppointmentController extends HttpServlet {
+    private final AppointmentBOImpl appointmentBOImpl = new AppointmentBOImpl();
     Connection connection;
+
     @Override
     public void init() {
         try {
@@ -38,7 +40,6 @@ public class AppointmentController extends HttpServlet {
 
         try (var writer = resp.getWriter()) {
             Jsonb jsonb = JsonbBuilder.create();
-            AppointmentBOImpl appointmentBOImpl = new AppointmentBOImpl();
             AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
 
             writer.write(appointmentBOImpl.saveAppointment(appointment,connection));
@@ -46,6 +47,25 @@ public class AppointmentController extends HttpServlet {
         } catch (Exception e){
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp){
+        try (var write = resp.getWriter()) {
+            var appointmentId = req.getParameter("appId");
+            Jsonb jsonb = JsonbBuilder.create();
+            AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
+
+            if(appointmentBOImpl.updateAppointment(appointmentId,appointment,connection)){
+                write.write("Appointment update successful");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }else {
+                write.write("Appointment update failed");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
