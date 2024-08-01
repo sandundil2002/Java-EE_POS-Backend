@@ -81,4 +81,21 @@ public class AppointmentController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            var appointmentId = req.getParameter("appId");
+
+            if(appointmentBOImpl.deleteAppointment(appointmentId,connection)){
+                writer.write("Appointment Delete successful");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }else {
+                writer.write("Delete failed");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

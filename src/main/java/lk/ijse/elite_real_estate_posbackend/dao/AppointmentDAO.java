@@ -8,4 +8,5 @@ public sealed interface AppointmentDAO permits AppointmentDAOImpl{
     String saveAppointment(AppointmentDTO appointmentDTO, Connection connection);
     boolean updateAppointment(String appId, AppointmentDTO appointment, Connection connection);
     AppointmentDTO searchAppointment(String appId, Connection connection);
+    boolean deleteAppointment(String appId, Connection connection);
 }

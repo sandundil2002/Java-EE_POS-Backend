@@ -23,4 +23,9 @@ public class AppointmentBOImpl implements AppointmentBO {
     public AppointmentDTO searchAppointment(String appId, Connection connection) {
         return appointmentDAO.searchAppointment(appId, connection);
     }
+
+    @Override
+    public boolean deleteAppointment(String appId, Connection connection) {
+        return appointmentDAO.deleteAppointment(appId, connection);
+    }
 }

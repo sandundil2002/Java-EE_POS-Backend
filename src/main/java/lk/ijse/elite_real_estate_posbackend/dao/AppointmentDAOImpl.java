@@ -64,4 +64,16 @@ public final class AppointmentDAOImpl implements AppointmentDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean deleteAppointment(String appId, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("DELETE FROM appointment WHERE appId=?");
+            ps.setString(1, appId);
+            return ps.executeUpdate() != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
