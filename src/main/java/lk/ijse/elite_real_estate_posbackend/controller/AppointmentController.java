@@ -6,7 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lk.ijse.elite_real_estate_posbackend.bo.impl.AppointmentBOImpl;
+import lk.ijse.elite_real_estate_posbackend.bo.AppointmentBOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
 import javax.naming.InitialContext;
@@ -18,7 +18,7 @@ import java.sql.SQLException;
 
 @WebServlet(urlPatterns = "/appointment", loadOnStartup = 1)
 public class AppointmentController extends HttpServlet {
-    private final AppointmentBOImpl appointmentBOImpl = new AppointmentBOImpl();
+    private final AppointmentBOIMPL appointmentBOImpl = new AppointmentBOIMPL();
     Connection connection;
 
     @Override

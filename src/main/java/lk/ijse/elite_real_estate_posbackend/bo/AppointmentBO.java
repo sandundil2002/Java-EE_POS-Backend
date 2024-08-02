@@ -4,7 +4,7 @@ import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
 import java.sql.Connection;
 
-public interface AppointmentBO {
+public sealed interface AppointmentBO permits AppointmentBOIMPL {
     String saveAppointment(AppointmentDTO appointment, Connection connection);
     boolean updateAppointment(String appId, AppointmentDTO appointment, Connection connection);
     AppointmentDTO searchAppointment(String appId, Connection connection);

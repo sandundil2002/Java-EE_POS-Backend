@@ -1,13 +1,12 @@
-package lk.ijse.elite_real_estate_posbackend.bo.impl;
+package lk.ijse.elite_real_estate_posbackend.bo;
 
-import lk.ijse.elite_real_estate_posbackend.bo.AppointmentBO;
-import lk.ijse.elite_real_estate_posbackend.dao.AppointmentDAOImpl;
+import lk.ijse.elite_real_estate_posbackend.dao.AppointmentDAOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
 import java.sql.Connection;
 
-public class AppointmentBOImpl implements AppointmentBO {
-    private final AppointmentDAOImpl appointmentDAO = new AppointmentDAOImpl();
+public final class AppointmentBOIMPL implements AppointmentBO {
+    private final AppointmentDAOIMPL appointmentDAO = new AppointmentDAOIMPL();
 
     @Override
     public String saveAppointment(AppointmentDTO appointment, Connection connection) {

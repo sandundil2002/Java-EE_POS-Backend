@@ -5,11 +5,11 @@ import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public final class AppointmentDAOImpl implements AppointmentDAO {
+public final class AppointmentDAOIMPL implements AppointmentDAO {
     @Override
     public String saveAppointment(AppointmentDTO appointment, Connection connection) {
         try {
-            var ps = connection.prepareStatement("INSERT INTO appointment (appId,admId,cusName,cusMobile,dateTime) VALUES(?,?,?,?,?)");
+            var ps = connection.prepareStatement("INSERT INTO appointment (App_id,Adm_id,Cus_name,Cus_mobile,Date_time) VALUES(?,?,?,?,?)");
             ps.setString(1, appointment.getAppId());
             ps.setString(2, appointment.getAdmId());
             ps.setString(3, appointment.getCusName());
@@ -19,7 +19,7 @@ public final class AppointmentDAOImpl implements AppointmentDAO {
             if (ps.executeUpdate() != 0) {
                 return "Appointment saved successful";
             } else {
-                return "Appointment not saved";
+                return "Failed to saved appointment";
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -30,7 +30,7 @@ public final class AppointmentDAOImpl implements AppointmentDAO {
     @Override
     public boolean updateAppointment(String appId, AppointmentDTO appointment, Connection connection) {
         try {
-            var ps = connection.prepareStatement("UPDATE appointment SET admId=?,cusName=?,cusMobile=?,dateTime=? WHERE appId=?");
+            var ps = connection.prepareStatement("UPDATE appointment SET Adm_id=?,Cus_name=?,Cus_mobile=?,Date_time=? WHERE App_id=?");
             ps.setString(1, appointment.getAdmId());
             ps.setString(2, appointment.getCusName());
             ps.setString(3, appointment.getCusMobile());
@@ -47,16 +47,16 @@ public final class AppointmentDAOImpl implements AppointmentDAO {
     public AppointmentDTO searchAppointment(String appId, Connection connection) {
         try {
             AppointmentDTO appointmentDTO = new AppointmentDTO();
-            var ps = connection.prepareStatement("SELECT * FROM appointment WHERE appId=?");
+            var ps = connection.prepareStatement("SELECT * FROM appointment WHERE App_id=?");
             ps.setString(1, appId);
             var rst = ps.executeQuery();
 
             while (rst.next()) {
-                appointmentDTO.setAppId(rst.getString("appId"));
-                appointmentDTO.setAdmId(rst.getString("admId"));
-                appointmentDTO.setCusName(rst.getString("cusName"));
-                appointmentDTO.setCusMobile(rst.getString("cusMobile"));
-                appointmentDTO.setDateTime(rst.getString("dateTime"));
+                appointmentDTO.setAppId(rst.getString("App_id"));
+                appointmentDTO.setAdmId(rst.getString("Adm_id"));
+                appointmentDTO.setCusName(rst.getString("Cus_name"));
+                appointmentDTO.setCusMobile(rst.getString("Cus_mobile"));
+                appointmentDTO.setDateTime(rst.getString("Date_time"));
             }
             return appointmentDTO;
         } catch (Exception e){
@@ -68,7 +68,7 @@ public final class AppointmentDAOImpl implements AppointmentDAO {
     @Override
     public boolean deleteAppointment(String appId, Connection connection) {
         try {
-            var ps = connection.prepareStatement("DELETE FROM appointment WHERE appId=?");
+            var ps = connection.prepareStatement("DELETE FROM appointment WHERE App_id=?");
             ps.setString(1, appId);
             return ps.executeUpdate() != 0;
         } catch (SQLException e) {
