@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="elite_real_estate_pos@localhost" uuid="a458af61-539d-4183-9ad3-d9df0b197d25">
+    <data-source source="LOCAL" name="elite_real_estate_pos@localhost" uuid="14b6fcd1-d642-498d-b197-384104493245">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
