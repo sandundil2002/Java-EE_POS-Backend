@@ -9,28 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.elite_real_estate_posbackend.bo.AppointmentBOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @WebServlet(urlPatterns = "/appointment", loadOnStartup = 1)
 public class AppointmentController extends HttpServlet {
     private final AppointmentBOIMPL appointmentBOImpl = new AppointmentBOIMPL();
-    Connection connection;
-
-    @Override
-    public void init() {
-        try {
-            var ctx = new InitialContext();
-            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/elite_real_estate_pos");
-            this.connection = pool.getConnection();
-        } catch (SQLException | NamingException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -42,7 +25,7 @@ public class AppointmentController extends HttpServlet {
             Jsonb jsonb = JsonbBuilder.create();
             AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
 
-            writer.write(appointmentBOImpl.saveAppointment(appointment,connection));
+            writer.write(appointmentBOImpl.saveAppointment(appointment));
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e){
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -57,7 +40,7 @@ public class AppointmentController extends HttpServlet {
             Jsonb jsonb = JsonbBuilder.create();
             AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
 
-            if(appointmentBOImpl.updateAppointment(appointmentId,appointment,connection)){
+            if(appointmentBOImpl.updateAppointment(appointmentId,appointment)){
                 write.write("Appointment update successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }else {
@@ -74,7 +57,7 @@ public class AppointmentController extends HttpServlet {
         try (var writer = resp.getWriter()) {
             var appointmentId = req.getParameter("appId");
 
-            var appointment = appointmentBOImpl.searchAppointment(appointmentId, connection);
+            var appointment = appointmentBOImpl.searchAppointment(appointmentId);
             if (appointment != null) {
                 Jsonb jsonb = JsonbBuilder.create();
                 writer.write(jsonb.toJson(appointment));
@@ -92,7 +75,7 @@ public class AppointmentController extends HttpServlet {
         try (var writer = resp.getWriter()) {
             var appointmentId = req.getParameter("appId");
 
-            if(appointmentBOImpl.deleteAppointment(appointmentId,connection)){
+            if(appointmentBOImpl.deleteAppointment(appointmentId)){
                 writer.write("Appointment Delete successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }else {
@@ -102,5 +85,10 @@ public class AppointmentController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
     }
 }

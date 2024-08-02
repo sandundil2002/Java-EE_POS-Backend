@@ -1,13 +1,16 @@
 package lk.ijse.elite_real_estate_posbackend.dao;
 
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
+import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public final class AppointmentDAOIMPL implements AppointmentDAO {
+    private final Connection connection = ConnectionUtil.getInstance().getConnection();
+
     @Override
-    public String saveAppointment(AppointmentDTO appointment, Connection connection) {
+    public String saveAppointment(AppointmentDTO appointment) {
         try {
             var ps = connection.prepareStatement("INSERT INTO appointment (App_id,Adm_id,Cus_name,Cus_mobile,Date_time) VALUES(?,?,?,?,?)");
             ps.setString(1, appointment.getAppId());
@@ -28,7 +31,7 @@ public final class AppointmentDAOIMPL implements AppointmentDAO {
     }
 
     @Override
-    public boolean updateAppointment(String appId, AppointmentDTO appointment, Connection connection) {
+    public boolean updateAppointment(String appId, AppointmentDTO appointment) {
         try {
             var ps = connection.prepareStatement("UPDATE appointment SET Adm_id=?,Cus_name=?,Cus_mobile=?,Date_time=? WHERE App_id=?");
             ps.setString(1, appointment.getAdmId());
@@ -45,7 +48,7 @@ public final class AppointmentDAOIMPL implements AppointmentDAO {
     }
 
     @Override
-    public AppointmentDTO searchAppointment(String appId, Connection connection) {
+    public AppointmentDTO searchAppointment(String appId) {
         try {
             AppointmentDTO appointmentDTO = new AppointmentDTO();
             var ps = connection.prepareStatement("SELECT * FROM appointment WHERE App_id=?");
@@ -67,7 +70,7 @@ public final class AppointmentDAOIMPL implements AppointmentDAO {
     }
 
     @Override
-    public boolean deleteAppointment(String appId, Connection connection) {
+    public boolean deleteAppointment(String appId) {
         try {
             var ps = connection.prepareStatement("DELETE FROM appointment WHERE App_id=?");
             ps.setString(1, appId);

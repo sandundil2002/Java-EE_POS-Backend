@@ -1,13 +1,16 @@
 package lk.ijse.elite_real_estate_posbackend.dao;
 
 import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
+import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public final class CustomerDAOIMPL implements CustomerDAO {
+    private final Connection connection = ConnectionUtil.getInstance().getConnection();
+
     @Override
-    public String saveCustomer(CustomerDTO customer, Connection connection) {
+    public String saveCustomer(CustomerDTO customer) {
         try {
             var ps = connection.prepareStatement("INSERT INTO customer (Cus_id,App_id,Name,Address,Mobile,Email) VALUES(?,?,?,?,?,?)");
             ps.setString(1, customer.getCusId());
@@ -29,7 +32,7 @@ public final class CustomerDAOIMPL implements CustomerDAO {
     }
 
     @Override
-    public boolean updateCustomer(String cusId, CustomerDTO customer, Connection connection) {
+    public boolean updateCustomer(String cusId, CustomerDTO customer) {
         try {
             var ps = connection.prepareStatement("UPDATE customer SET App_id=?,Name=?,Address=?,Mobile=?,Email=? WHERE Cus_id=?");
             ps.setString(1, customer.getAppId());
@@ -47,7 +50,7 @@ public final class CustomerDAOIMPL implements CustomerDAO {
     }
 
     @Override
-    public CustomerDTO searchCustomer(String cusId, Connection connection) {
+    public CustomerDTO searchCustomer(String cusId) {
         try {
             CustomerDTO customerDTO = new CustomerDTO();
             var ps = connection.prepareStatement("SELECT * FROM customer WHERE Cus_id=?");
@@ -70,7 +73,7 @@ public final class CustomerDAOIMPL implements CustomerDAO {
     }
 
     @Override
-    public boolean deleteCustomer(String cusId, Connection connection) {
+    public boolean deleteCustomer(String cusId) {
         try {
             var ps = connection.prepareStatement("DELETE FROM customer WHERE Cus_id=?");
             ps.setString(1, cusId);

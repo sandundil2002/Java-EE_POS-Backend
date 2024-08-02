@@ -3,28 +3,26 @@ package lk.ijse.elite_real_estate_posbackend.bo;
 import lk.ijse.elite_real_estate_posbackend.dao.AppointmentDAOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
-import java.sql.Connection;
-
 public final class AppointmentBOIMPL implements AppointmentBO {
     private final AppointmentDAOIMPL appointmentDAO = new AppointmentDAOIMPL();
 
     @Override
-    public String saveAppointment(AppointmentDTO appointment, Connection connection) {
-        return appointmentDAO.saveAppointment(appointment, connection);
+    public String saveAppointment(AppointmentDTO appointment) {
+        return appointmentDAO.saveAppointment(appointment);
     }
 
     @Override
-    public boolean updateAppointment(String appId, AppointmentDTO appointment, Connection connection) {
-        return appointmentDAO.updateAppointment(appId, appointment, connection);
+    public boolean updateAppointment(String appId, AppointmentDTO appointment) {
+        return appointmentDAO.updateAppointment(appId, appointment);
     }
 
     @Override
-    public AppointmentDTO searchAppointment(String appId, Connection connection) {
-        return appointmentDAO.searchAppointment(appId, connection);
+    public AppointmentDTO searchAppointment(String appId) {
+        return appointmentDAO.searchAppointment(appId);
     }
 
     @Override
-    public boolean deleteAppointment(String appId, Connection connection) {
-        return appointmentDAO.deleteAppointment(appId, connection);
+    public boolean deleteAppointment(String appId ) {
+        return appointmentDAO.deleteAppointment(appId);
     }
 }

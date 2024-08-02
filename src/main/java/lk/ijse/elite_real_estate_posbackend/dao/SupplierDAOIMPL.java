@@ -1,13 +1,16 @@
 package lk.ijse.elite_real_estate_posbackend.dao;
 
 import lk.ijse.elite_real_estate_posbackend.dto.SupplierDTO;
+import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public final class SupplierDAOIMPL implements SupplierDAO {
+    private final Connection connection = ConnectionUtil.getInstance().getConnection();
+
     @Override
-    public String saveSupplier(SupplierDTO supplier, Connection connection) {
+    public String saveSupplier(SupplierDTO supplier) {
         try {
             var ps = connection.prepareStatement("INSERT INTO supplier (Sup_id,Adm_id,Name,Address,Mobile,Email) VALUES(?,?,?,?,?,?)");
             ps.setString(1, supplier.getSupId());
@@ -29,7 +32,7 @@ public final class SupplierDAOIMPL implements SupplierDAO {
     }
 
     @Override
-    public boolean updateSupplier(String supplierId, SupplierDTO supplier, Connection connection) {
+    public boolean updateSupplier(String supplierId, SupplierDTO supplier) {
         try {
             var ps = connection.prepareStatement("UPDATE supplier SET Adm_id=?,Name=?,Address=?,Mobile=?,Email=? WHERE Sup_id=?");
             ps.setString(1, supplier.getAdmId());
@@ -47,7 +50,7 @@ public final class SupplierDAOIMPL implements SupplierDAO {
     }
 
     @Override
-    public SupplierDTO searchSupplier(String supplierId, Connection connection) {
+    public SupplierDTO searchSupplier(String supplierId) {
         try {
             SupplierDTO supplierDTO = new SupplierDTO();
             var ps = connection.prepareStatement("SELECT * FROM supplier WHERE Sup_id=?");
@@ -70,7 +73,7 @@ public final class SupplierDAOIMPL implements SupplierDAO {
     }
 
     @Override
-    public boolean deleteSupplier(String supplierId, Connection connection) {
+    public boolean deleteSupplier(String supplierId) {
         try {
             var ps = connection.prepareStatement("DELETE FROM supplier WHERE Sup_id=?");
             ps.setString(1, supplierId);
