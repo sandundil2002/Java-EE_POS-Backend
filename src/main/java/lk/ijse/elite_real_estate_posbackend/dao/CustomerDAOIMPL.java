@@ -45,4 +45,27 @@ public final class CustomerDAOIMPL implements CustomerDAO {
         }
         return false;
     }
+
+    @Override
+    public CustomerDTO searchCustomer(String cusId, Connection connection) {
+        try {
+            CustomerDTO customerDTO = new CustomerDTO();
+            var ps = connection.prepareStatement("SELECT * FROM customer WHERE Cus_id=?");
+            ps.setString(1, cusId);
+            var rst = ps.executeQuery();
+
+            while (rst.next()){
+                customerDTO.setCusId(rst.getString("Cus_id"));
+                customerDTO.setAppId(rst.getString("App_id"));
+                customerDTO.setName(rst.getString("Name"));
+                customerDTO.setAddress(rst.getString("Address"));
+                customerDTO.setMobile(rst.getString("Mobile"));
+                customerDTO.setEmail(rst.getString("Email"));
+            }
+            return customerDTO;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -17,4 +17,9 @@ public final class CustomerBOIMPL implements CustomerBO {
     public boolean updateCustomer(String cusId, CustomerDTO customer, Connection connection) {
         return customerDAO.updateCustomer(cusId, customer, connection);
     }
+
+    @Override
+    public CustomerDTO searchCustomer(String cusId, Connection connection) {
+        return customerDAO.searchCustomer(cusId, connection);
+    }
 }
