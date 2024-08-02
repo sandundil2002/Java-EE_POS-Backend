@@ -12,4 +12,9 @@ public final class SupplierBOIMPL implements SupplierBO {
     public String saveSupplier(SupplierDTO supplier, Connection connection) {
         return supplierDAO.saveSupplier(supplier, connection);
     }
+
+    @Override
+    public boolean updateSupplier(String supplierId, SupplierDTO supplier, Connection connection) {
+        return supplierDAO.updateSupplier(supplierId, supplier, connection);
+    }
 }

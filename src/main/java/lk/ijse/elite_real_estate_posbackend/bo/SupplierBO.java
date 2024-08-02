@@ -6,4 +6,5 @@ import java.sql.Connection;
 
 public sealed interface SupplierBO permits SupplierBOIMPL{
     String saveSupplier(SupplierDTO supplier, Connection connection);
+    boolean updateSupplier(String supplierId, SupplierDTO supplier, Connection connection);
 }

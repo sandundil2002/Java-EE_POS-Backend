@@ -27,4 +27,22 @@ public final class SupplierDAOIMPL implements SupplierDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean updateSupplier(String supplierId, SupplierDTO supplier, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("UPDATE supplier SET Adm_id=?,Name=?,Address=?,Mobile=?,Email=? WHERE Sup_id=?");
+            ps.setString(1, supplier.getAdmId());
+            ps.setString(2, supplier.getName());
+            ps.setString(3, supplier.getAddress());
+            ps.setString(4, supplier.getMobile());
+            ps.setString(5, supplier.getEmail());
+            ps.setString(6, supplierId);
+
+            return ps.executeUpdate() != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

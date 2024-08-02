@@ -48,4 +48,24 @@ public class SupplierController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+        try (var write = resp.getWriter()) {
+            var supplierId = req.getParameter("supId");
+            Jsonb jsonb = JsonbBuilder.create();
+            SupplierDTO supplier = jsonb.fromJson(req.getReader(), SupplierDTO.class);
+
+            if (supplierBOImpl.updateSupplier(supplierId, supplier, connection)) {
+                write.write("Supplier updated successfully");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                write.write("Failed to update supplier");
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+        }
+    }
 }
