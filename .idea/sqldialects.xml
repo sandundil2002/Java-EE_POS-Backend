@@ -3,6 +3,7 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/main/java/lk/ijse/elite_real_estate_posbackend/dao/AppointmentDAOIMPL.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/lk/ijse/elite_real_estate_posbackend/dao/CustomerDAOIMPL.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/lk/ijse/elite_real_estate_posbackend/dao/SupplierDAOIMPL.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sql/db.sql" dialect="GenericSQL" />
   </component>
 </project>

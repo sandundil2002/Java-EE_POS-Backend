@@ -12,7 +12,7 @@ import java.awt.*;
 public class SupplierDTO {
     private String supId;
     private String admId;
-    private String supName;
+    private String name;
     private String address;
     private String mobile;
     private String email;
