@@ -20,4 +20,9 @@ public final class PropertyBOIMPL implements PropertyBO {
     public PropertyDTO searchProperty(String propertyId) {
         return propertyDAO.searchProperty(propertyId);
     }
+
+    @Override
+    public boolean deleteProperty(String propertyId) {
+        return propertyDAO.deleteProperty(propertyId);
+    }
 }

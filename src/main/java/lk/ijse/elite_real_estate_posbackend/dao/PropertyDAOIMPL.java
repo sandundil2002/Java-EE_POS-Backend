@@ -70,4 +70,17 @@ public final class PropertyDAOIMPL implements PropertyDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean deleteProperty(String propertyId) {
+        try {
+            var ps = connection.prepareStatement("DELETE FROM property WHERE Pro_id=?");
+            ps.setString(1, propertyId);
+
+            return ps.executeUpdate() != 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

@@ -6,4 +6,5 @@ public sealed interface PropertyBO permits PropertyBOIMPL {
     String saveProperty(PropertyDTO property);
     boolean updateProperty(String propertyId, PropertyDTO property);
     PropertyDTO searchProperty(String propertyId);
+    boolean deleteProperty(String propertyId);
 }

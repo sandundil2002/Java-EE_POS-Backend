@@ -68,4 +68,26 @@ public class PropertyController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            var propertyId = req.getParameter("proId");
+
+            if (propertyBOImpl.deleteProperty(propertyId)) {
+                writer.write("Property deleted successful");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                writer.write("Property deleted failed");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+    }
 }

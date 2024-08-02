@@ -6,4 +6,5 @@ public sealed interface PropertyDAO permits PropertyDAOIMPL {
     String saveProperty(PropertyDTO property);
     boolean updateProperty(String propertyId, PropertyDTO property);
     PropertyDTO searchProperty(String propertyId);
+    boolean deleteProperty(String propertyId);
 }
