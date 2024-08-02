@@ -49,4 +49,22 @@ public class CustomerController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+        try (var write = resp.getWriter()) {
+            var customerId = req.getParameter("cusId");
+            Jsonb jsonb = JsonbBuilder.create();
+            CustomerDTO customer = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+
+            if(customerBOIMPL.updateCustomer(customerId,customer,connection)){
+                write.write("Customer update successful");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }else {
+                write.write("Customer update failed");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }    }
 }

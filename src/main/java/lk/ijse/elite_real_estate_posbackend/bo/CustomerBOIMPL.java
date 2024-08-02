@@ -12,4 +12,9 @@ public final class CustomerBOIMPL implements CustomerBO {
     public String saveCustomer(CustomerDTO customer, Connection connection) {
         return customerDAO.saveCustomer(customer, connection);
     }
+
+    @Override
+    public boolean updateCustomer(String cusId, CustomerDTO customer, Connection connection) {
+        return customerDAO.updateCustomer(cusId, customer, connection);
+    }
 }

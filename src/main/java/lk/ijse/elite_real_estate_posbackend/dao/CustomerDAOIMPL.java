@@ -27,4 +27,22 @@ public final class CustomerDAOIMPL implements CustomerDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean updateCustomer(String cusId, CustomerDTO customer, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("UPDATE customer SET App_id=?,Name=?,Address=?,Mobile=?,Email=? WHERE Cus_id=?");
+            ps.setString(1, customer.getAppId());
+            ps.setString(2, customer.getName());
+            ps.setString(3, customer.getAddress());
+            ps.setString(4, customer.getMobile());
+            ps.setString(5, customer.getEmail());
+            ps.setString(6,cusId);
+
+            return ps.executeUpdate() != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
