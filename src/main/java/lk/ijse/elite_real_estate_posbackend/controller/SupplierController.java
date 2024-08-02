@@ -68,4 +68,42 @@ public class SupplierController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            var supplierId = req.getParameter("supId");
+
+            var supplier = supplierBOImpl.searchSupplier(supplierId, connection);
+            if (supplier != null) {
+                Jsonb jsonb = JsonbBuilder.create();
+                writer.write(jsonb.toJson(supplier));
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                writer.write("Supplier not found");
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            var supplierId = req.getParameter("supId");
+
+            if (supplierBOImpl.deleteSupplier(supplierId, connection)) {
+                writer.write("Supplier deleted successfully");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                writer.write("Failed to delete supplier");
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+        }
+    }
 }
