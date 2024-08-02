@@ -24,7 +24,6 @@ public class AppointmentController extends HttpServlet {
         try (var writer = resp.getWriter()) {
             Jsonb jsonb = JsonbBuilder.create();
             AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
-
             writer.write(appointmentBOImpl.saveAppointment(appointment));
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e){
