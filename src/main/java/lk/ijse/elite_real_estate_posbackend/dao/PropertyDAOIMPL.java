@@ -29,4 +29,22 @@ public final class PropertyDAOIMPL implements PropertyDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean updateProperty(String propertyId, PropertyDTO property) {
+        try {
+            var ps = connection.prepareStatement("UPDATE property SET Sup_id=?,Type=?,Address=?,Price=?,Perches=? WHERE Pro_id=?");
+            ps.setString(1, property.getSupId());
+            ps.setString(2, property.getType());
+            ps.setString(3, property.getAddress());
+            ps.setString(4, property.getPrice());
+            ps.setString(5, property.getPerches());
+            ps.setString(6, propertyId);
+
+            return ps.executeUpdate() != 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

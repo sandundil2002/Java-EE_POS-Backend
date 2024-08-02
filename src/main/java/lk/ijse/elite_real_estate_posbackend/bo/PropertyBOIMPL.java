@@ -10,4 +10,9 @@ public final class PropertyBOIMPL implements PropertyBO {
     public String saveProperty(PropertyDTO property) {
         return propertyDAO.saveProperty(property);
     }
+
+    @Override
+    public boolean updateProperty(String propertyId, PropertyDTO property) {
+        return propertyDAO.updateProperty(propertyId, property);
+    }
 }

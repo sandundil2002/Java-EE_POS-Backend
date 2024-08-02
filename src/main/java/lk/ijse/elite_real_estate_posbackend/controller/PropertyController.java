@@ -32,4 +32,23 @@ public class PropertyController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try (var write = resp.getWriter()) {
+            var propertyId = req.getParameter("proId");
+            Jsonb jsonb = JsonbBuilder.create();
+            PropertyDTO property = jsonb.fromJson(req.getReader(), PropertyDTO.class);
+
+            if (propertyBOImpl.updateProperty(propertyId, property)) {
+                write.write("Property update successful");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                write.write("Property update failed");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
