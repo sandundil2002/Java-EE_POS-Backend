@@ -88,4 +88,20 @@ public class CustomerController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            var customerId = req.getParameter("cusId");
+            if (customerBOIMPL.deleteCustomer(customerId, connection)) {
+                writer.write("Customer Delete successful");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                writer.write("Customer Delete failed");
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

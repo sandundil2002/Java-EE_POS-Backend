@@ -68,4 +68,16 @@ public final class CustomerDAOIMPL implements CustomerDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean deleteCustomer(String cusId, Connection connection) {
+        try {
+            var ps = connection.prepareStatement("DELETE FROM customer WHERE Cus_id=?");
+            ps.setString(1, cusId);
+            return ps.executeUpdate() != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

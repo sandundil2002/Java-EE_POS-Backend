@@ -8,4 +8,5 @@ public sealed interface CustomerBO permits CustomerBOIMPL{
     String saveCustomer(CustomerDTO customer, Connection connection);
     boolean updateCustomer(String cusId, CustomerDTO customer, Connection connection);
     CustomerDTO searchCustomer(String cusId, Connection connection);
+    boolean deleteCustomer(String cusId, Connection connection);
 }

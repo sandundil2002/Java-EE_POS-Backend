@@ -22,4 +22,9 @@ public final class CustomerBOIMPL implements CustomerBO {
     public CustomerDTO searchCustomer(String cusId, Connection connection) {
         return customerDAO.searchCustomer(cusId, connection);
     }
+
+    @Override
+    public boolean deleteCustomer(String cusId, Connection connection) {
+        return customerDAO.deleteCustomer(cusId, connection);
+    }
 }
