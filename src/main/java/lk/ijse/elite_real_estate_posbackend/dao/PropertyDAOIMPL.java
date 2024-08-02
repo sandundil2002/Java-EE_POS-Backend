@@ -47,4 +47,27 @@ public final class PropertyDAOIMPL implements PropertyDAO {
         }
         return false;
     }
+
+    @Override
+    public PropertyDTO searchProperty(String propertyId) {
+        try {
+            PropertyDTO propertyDTO = new PropertyDTO();
+            var ps = connection.prepareStatement("SELECT * FROM property WHERE Pro_id=?");
+            ps.setString(1, propertyId);
+            var rst = ps.executeQuery();
+
+            while (rst.next()) {
+                propertyDTO.setProId(rst.getString("Pro_id"));
+                propertyDTO.setSupId(rst.getString("Sup_id"));
+                propertyDTO.setType(rst.getString("Type"));
+                propertyDTO.setAddress(rst.getString("Address"));
+                propertyDTO.setPrice(rst.getString("Price"));
+                propertyDTO.setPerches(rst.getString("Perches"));
+            }
+            return propertyDTO;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -2,7 +2,6 @@ package lk.ijse.elite_real_estate_posbackend.controller;
 
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +33,7 @@ public class PropertyController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         try (var write = resp.getWriter()) {
             var propertyId = req.getParameter("proId");
             Jsonb jsonb = JsonbBuilder.create();
@@ -46,6 +45,24 @@ public class PropertyController extends HttpServlet {
             } else {
                 write.write("Property update failed");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            var propertyId = req.getParameter("proId");
+
+            var property = propertyBOImpl.searchProperty(propertyId);
+            if (property != null) {
+                Jsonb jsonb = JsonbBuilder.create();
+                writer.write(jsonb.toJson(property));
+            } else {
+                writer.write("Property not found");
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

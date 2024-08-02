@@ -15,4 +15,9 @@ public final class PropertyBOIMPL implements PropertyBO {
     public boolean updateProperty(String propertyId, PropertyDTO property) {
         return propertyDAO.updateProperty(propertyId, property);
     }
+
+    @Override
+    public PropertyDTO searchProperty(String propertyId) {
+        return propertyDAO.searchProperty(propertyId);
+    }
 }
