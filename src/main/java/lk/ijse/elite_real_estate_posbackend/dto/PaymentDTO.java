@@ -11,7 +11,7 @@ public class PaymentDTO {
     private String payId;
     private String proId;
     private String cusId;
-    private String price;
+    private String proPrice;
     private String cusName;
     private String method;
 }
