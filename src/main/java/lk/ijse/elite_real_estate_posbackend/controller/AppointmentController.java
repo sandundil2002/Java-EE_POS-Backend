@@ -10,6 +10,7 @@ import lk.ijse.elite_real_estate_posbackend.bo.AppointmentBOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(urlPatterns = "/appointment", loadOnStartup = 1)
 public class AppointmentController extends HttpServlet {
@@ -23,8 +24,7 @@ public class AppointmentController extends HttpServlet {
 
         try (var writer = resp.getWriter()) {
             Jsonb jsonb = JsonbBuilder.create();
-            AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
-            writer.write(appointmentBOImpl.saveAppointment(appointment));
+            AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);            writer.write(appointmentBOImpl.saveAppointment(appointment));
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e){
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -38,6 +38,7 @@ public class AppointmentController extends HttpServlet {
             var appointmentId = req.getParameter("appId");
             Jsonb jsonb = JsonbBuilder.create();
             AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
+            System.out.println(appointment.toString());
 
             if(appointmentBOImpl.updateAppointment(appointmentId,appointment)){
                 write.write("Appointment update successful");
@@ -47,25 +48,38 @@ public class AppointmentController extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        try (var writer = resp.getWriter()) {
-            var appointmentId = req.getParameter("appId");
+        String appointmentId = req.getParameter("appId");
 
-            var appointment = appointmentBOImpl.searchAppointment(appointmentId);
-            if (appointment != null) {
-                Jsonb jsonb = JsonbBuilder.create();
-                writer.write(jsonb.toJson(appointment));
-            } else {
-                writer.write("Appointment not found");
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        if (appointmentId != null) {
+            try (var writer = resp.getWriter()) {
+                var appointment = appointmentBOImpl.searchAppointment(appointmentId);
+                if (appointment != null) {
+                    Jsonb jsonb = JsonbBuilder.create();
+                    writer.write(jsonb.toJson(appointment));
+                } else {
+                    writer.write("Appointment not found");
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            try (var writer = resp.getWriter()) {
+                List<AppointmentDTO> appointments = appointmentBOImpl.getAllAppointments();
+                Jsonb jsonb = JsonbBuilder.create();
+                writer.write(jsonb.toJson(appointments));
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } catch (Exception e) {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                e.printStackTrace();
+            }
         }
     }
 

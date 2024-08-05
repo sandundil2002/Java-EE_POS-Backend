@@ -5,9 +5,35 @@ import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.ResultSet;
 
 public final class AppointmentDAOIMPL implements AppointmentDAO {
     private final Connection connection = ConnectionUtil.getInstance().getConnection();
+
+    public List<AppointmentDTO> getAllAppointments() {
+        List<AppointmentDTO> appointments = new ArrayList<>();
+
+        try {
+            var pst = connection.prepareStatement( "SELECT * FROM appointment");
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                AppointmentDTO appointment = new AppointmentDTO(
+                        rs.getString("App_id"),
+                        rs.getString("Adm_id"),
+                        rs.getString("Cus_name"),
+                        rs.getString("Cus_mobile"),
+                        rs.getString("Date_time")
+                );
+                appointments.add(appointment);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return appointments;
+    }
 
     @Override
     public String saveAppointment(AppointmentDTO appointment) {
