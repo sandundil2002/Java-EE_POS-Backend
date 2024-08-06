@@ -10,4 +10,5 @@ public sealed interface AppointmentBO permits AppointmentBOIMPL {
     boolean updateAppointment(String appId, AppointmentDTO appointment);
     AppointmentDTO searchAppointment(String appId);
     boolean deleteAppointment(String appId);
+    List<String> getAdminIds();
 }

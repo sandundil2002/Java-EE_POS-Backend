@@ -106,4 +106,20 @@ public final class AppointmentDAOIMPL implements AppointmentDAO {
         }
         return false;
     }
+
+    @Override
+    public List<String> getAdminIds() {
+        List<String> adminIds = new ArrayList<>();
+        try {
+            var pst = connection.prepareStatement("SELECT Adm_id FROM admin");
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                adminIds.add(rs.getString("Adm_id"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return adminIds;
+    }
 }

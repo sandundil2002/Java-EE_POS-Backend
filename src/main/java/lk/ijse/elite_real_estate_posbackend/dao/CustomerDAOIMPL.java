@@ -110,4 +110,20 @@ public final class CustomerDAOIMPL implements CustomerDAO {
         }
         return false;
     }
+
+    @Override
+    public List<String> getAppointmentIds() {
+        List<String> appointmentIds = new ArrayList<>();
+        try {
+            var pst = connection.prepareStatement("SELECT App_id FROM appointment");
+            var rs = pst.executeQuery();
+
+            while (rs.next()) {
+                appointmentIds.add(rs.getString("App_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return appointmentIds;
+    }
 }

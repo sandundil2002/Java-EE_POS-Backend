@@ -32,4 +32,9 @@ public final class AppointmentBOIMPL implements AppointmentBO {
     public boolean deleteAppointment(String appId ) {
         return appointmentDAO.deleteAppointment(appId);
     }
+
+    @Override
+    public List<String> getAdminIds() {
+        return appointmentDAO.getAdminIds();
+    }
 }

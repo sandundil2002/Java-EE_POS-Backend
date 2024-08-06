@@ -10,4 +10,5 @@ public sealed interface AppointmentDAO permits AppointmentDAOIMPL {
     boolean updateAppointment(String appId, AppointmentDTO appointment);
     AppointmentDTO searchAppointment(String appId);
     boolean deleteAppointment(String appId);
+    List<String> getAdminIds();
 }

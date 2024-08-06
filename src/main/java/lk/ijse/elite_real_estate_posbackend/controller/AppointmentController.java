@@ -10,7 +10,9 @@ import lk.ijse.elite_real_estate_posbackend.bo.AppointmentBOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(urlPatterns = "/appointment/*", loadOnStartup = 1)
 public class AppointmentController extends HttpServlet {
@@ -68,32 +70,32 @@ public class AppointmentController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String appointmentId = req.getParameter("appId");
 
-        if (appointmentId != null) {
-            try (var writer = resp.getWriter()) {
+        try (var writer = resp.getWriter()) {
+            Jsonb jsonb = JsonbBuilder.create();
+
+            if (appointmentId != null) {
                 var appointment = appointmentBOImpl.searchAppointment(appointmentId);
                 if (appointment != null) {
-                    Jsonb jsonb = JsonbBuilder.create();
                     writer.write(jsonb.toJson(appointment));
                 } else {
                     writer.write("Appointment not found");
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            try (var writer = resp.getWriter()) {
+            } else {
                 List<AppointmentDTO> appointments = appointmentBOImpl.getAllAppointments();
-                Jsonb jsonb = JsonbBuilder.create();
-                writer.write(jsonb.toJson(appointments));
+                List<String> adminIds = appointmentBOImpl.getAdminIds();
+                Map<String, Object> result = new HashMap<>();
+                result.put("appointments", appointments);
+                result.put("adminIds", adminIds);
+                writer.write(jsonb.toJson(result));
                 resp.setStatus(HttpServletResponse.SC_OK);
-            } catch (Exception e) {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
         }
     }
 

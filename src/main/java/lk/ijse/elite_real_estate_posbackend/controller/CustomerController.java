@@ -7,9 +7,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.elite_real_estate_posbackend.bo.CustomerBOIMPL;
+import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet(urlPatterns = "/customer/*", loadOnStartup = 1)
 public class CustomerController extends HttpServlet {
@@ -54,12 +58,14 @@ public class CustomerController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        String customerId = req.getParameter("cusId");
+
         try (var writer = resp.getWriter()) {
-            var customerId = req.getParameter("cusId");
+            Jsonb jsonb = JsonbBuilder.create();
+
             if (customerId != null) {
                 var customer = customerBOIMPL.searchCustomer(customerId);
                 if (customer != null) {
-                    Jsonb jsonb = JsonbBuilder.create();
                     writer.write(jsonb.toJson(customer));
                     resp.setStatus(HttpServletResponse.SC_OK);
                 } else {
@@ -67,18 +73,17 @@ public class CustomerController extends HttpServlet {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 }
             } else {
-                var customers = customerBOIMPL.getAllCustomers();
-                if (customers != null) {
-                    Jsonb jsonb = JsonbBuilder.create();
-                    writer.write(jsonb.toJson(customers));
-                    resp.setStatus(HttpServletResponse.SC_OK);
-                } else {
-                    writer.write("No customers found");
-                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                }
+                List<CustomerDTO> customers = customerBOIMPL.getAllCustomers();
+                List<String> appointmentIds = customerBOIMPL.getAppointmentIds();
+                Map<String, Object> result = new HashMap<>();
+                result.put("customers", customers);
+                result.put("appointments", appointmentIds);
+                writer.write(jsonb.toJson(result));
+                resp.setStatus(HttpServletResponse.SC_OK);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
         }
     }
 

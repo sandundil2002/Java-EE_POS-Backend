@@ -32,4 +32,9 @@ public final class CustomerBOIMPL implements CustomerBO {
     public boolean deleteCustomer(String cusId ) {
         return customerDAO.deleteCustomer(cusId);
     }
+
+    @Override
+    public List<String> getAppointmentIds() {
+        return customerDAO.getAppointmentIds();
+    }
 }

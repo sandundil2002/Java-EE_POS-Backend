@@ -10,4 +10,5 @@ public sealed interface CustomerBO permits CustomerBOIMPL{
     boolean updateCustomer(String cusId, CustomerDTO customer);
     CustomerDTO searchCustomer(String cusId);
     boolean deleteCustomer(String cusId);
+    List<String> getAppointmentIds();
 }
