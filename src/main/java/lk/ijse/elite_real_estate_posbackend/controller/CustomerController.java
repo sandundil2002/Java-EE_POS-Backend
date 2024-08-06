@@ -11,7 +11,7 @@ import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 
 import java.io.IOException;
 
-@WebServlet(urlPatterns = "/customer", loadOnStartup = 1)
+@WebServlet(urlPatterns = "/customer/*", loadOnStartup = 1)
 public class CustomerController extends HttpServlet {
     private final CustomerBOIMPL customerBOIMPL = new CustomerBOIMPL();
 
@@ -56,18 +56,29 @@ public class CustomerController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try (var writer = resp.getWriter()) {
             var customerId = req.getParameter("cusId");
-            CustomerDTO customer = customerBOIMPL.searchCustomer(customerId);
-
-            if (customer != null) {
-                Jsonb jsonb = JsonbBuilder.create();
-                writer.write(jsonb.toJson(customer));
-                resp.setStatus(HttpServletResponse.SC_OK);
+            if (customerId != null) {
+                var customer = customerBOIMPL.searchCustomer(customerId);
+                if (customer != null) {
+                    Jsonb jsonb = JsonbBuilder.create();
+                    writer.write(jsonb.toJson(customer));
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    writer.write("Customer not found");
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
             } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                var customers = customerBOIMPL.getAllCustomers();
+                if (customers != null) {
+                    Jsonb jsonb = JsonbBuilder.create();
+                    writer.write(jsonb.toJson(customers));
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    writer.write("No customers found");
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
             }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

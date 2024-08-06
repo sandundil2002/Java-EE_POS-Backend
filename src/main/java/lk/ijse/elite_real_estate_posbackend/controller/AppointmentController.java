@@ -12,7 +12,7 @@ import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/appointment", loadOnStartup = 1)
+@WebServlet(urlPatterns = "/appointment/*", loadOnStartup = 1)
 public class AppointmentController extends HttpServlet {
     private final AppointmentBOIMPL appointmentBOImpl = new AppointmentBOIMPL();
 
@@ -24,7 +24,8 @@ public class AppointmentController extends HttpServlet {
 
         try (var writer = resp.getWriter()) {
             Jsonb jsonb = JsonbBuilder.create();
-            AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);            writer.write(appointmentBOImpl.saveAppointment(appointment));
+            AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
+            writer.write(appointmentBOImpl.saveAppointment(appointment));
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e){
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -33,18 +34,31 @@ public class AppointmentController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp){
-        try (var write = resp.getWriter()) {
-            var appointmentId = req.getParameter("appId");
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                writer.write("Appointment ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String appointmentId = pathInfo.substring(1);
+            if (appointmentId.isEmpty()) {
+                writer.write("Appointment ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
             Jsonb jsonb = JsonbBuilder.create();
             AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
-            System.out.println(appointment.toString());
+            System.out.println("Received appointment: " + appointment.toString());
 
-            if(appointmentBOImpl.updateAppointment(appointmentId,appointment)){
-                write.write("Appointment update successful");
-                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            }else {
-                write.write("Appointment update failed");
+            if (appointmentBOImpl.updateAppointment(appointmentId, appointment)) {
+                writer.write("Appointment update successful");
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                writer.write("Appointment update failed");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         } catch (Exception e) {
@@ -86,16 +100,29 @@ public class AppointmentController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try (var writer = resp.getWriter()) {
-            var appointmentId = req.getParameter("appId");
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment ID is missing");
+                return;
+            }
 
-            if(appointmentBOImpl.deleteAppointment(appointmentId)){
-                writer.write("Appointment Delete successful");
+            String[] splits = pathInfo.split("/");
+            if (splits.length != 2) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid appointment ID");
+                return;
+            }
+
+            String appointmentId = splits[1];
+
+            if (appointmentBOImpl.deleteAppointment(appointmentId)) {
+                writer.write("Appointment delete successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            }else {
+            } else {
                 writer.write("Delete failed");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
     }

@@ -5,9 +5,36 @@ import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class CustomerDAOIMPL implements CustomerDAO {
     private final Connection connection = ConnectionUtil.getInstance().getConnection();
+
+    @Override
+    public List<CustomerDTO> getAllCustomers() {
+        List<CustomerDTO> customers = new ArrayList<>();
+
+        try {
+            var pst = connection.prepareStatement("SELECT * FROM customer");
+            var rs = pst.executeQuery();
+
+            while (rs.next()) {
+                CustomerDTO customer = new CustomerDTO(
+                        rs.getString("Cus_id"),
+                        rs.getString("App_id"),
+                        rs.getString("Name"),
+                        rs.getString("Address"),
+                        rs.getString("Mobile"),
+                        rs.getString("Email")
+                );
+                customers.add(customer);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return customers;
+    }
 
     @Override
     public String saveCustomer(CustomerDTO customer) {

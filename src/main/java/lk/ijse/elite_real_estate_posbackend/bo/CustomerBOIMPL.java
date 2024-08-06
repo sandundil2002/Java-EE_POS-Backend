@@ -3,8 +3,15 @@ package lk.ijse.elite_real_estate_posbackend.bo;
 import lk.ijse.elite_real_estate_posbackend.dao.CustomerDAOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 
+import java.util.List;
+
 public final class CustomerBOIMPL implements CustomerBO {
     private final CustomerDAOIMPL customerDAO = new CustomerDAOIMPL();
+
+    @Override
+    public List<CustomerDTO> getAllCustomers() {
+        return customerDAO.getAllCustomers();
+    }
 
     @Override
     public String saveCustomer(CustomerDTO customer) {
