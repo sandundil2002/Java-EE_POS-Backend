@@ -11,4 +11,6 @@ public sealed interface PaymentDAO permits PaymentDAOIMPL {
     String generatePaymentID();
     List<PropertyDTO> getAllProperties();
     List<CustomerDTO> getAllCustomers();
+    boolean updatePropertyStatus(String proId);
+    boolean updateAppointmentStatus(String cusId);
 }

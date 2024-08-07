@@ -16,6 +16,8 @@ public final class PaymentDAOIMPL implements PaymentDAO {
     @Override
     public String savePayment(PaymentDTO payment) {
         try {
+            connection.setAutoCommit(false);
+
             var ps = connection.prepareStatement("INSERT INTO payment (Pay_id,Pro_id,Cus_id,Pro_price,Cus_name,Method) VALUES(?,?,?,?,?,?)");
             ps.setString(1, payment.getPayId());
             ps.setString(2, payment.getProId());
@@ -24,15 +26,38 @@ public final class PaymentDAOIMPL implements PaymentDAO {
             ps.setString(5, payment.getCusName());
             ps.setString(6, payment.getMethod());
 
-            if (ps.executeUpdate() != 0) {
-                return "Payment saved successful";
-            } else {
-                return "Failed to saved payment";
+            if (ps.executeUpdate() == 0) {
+                connection.rollback();
+                return "Failed to save payment";
             }
+
+            if (!updatePropertyStatus(payment.getProId())) {
+                connection.rollback();
+                return "Failed to update property status";
+            }
+
+            if (!updateAppointmentStatus(payment.getCusId())) {
+                connection.rollback();
+                return "Failed to update appointment status";
+            }
+
+            connection.commit();
+            return "Payment saved successfully";
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
             e.printStackTrace();
+            return "Error occurred while saving payment";
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
     }
 
     @Override
@@ -63,10 +88,17 @@ public final class PaymentDAOIMPL implements PaymentDAO {
     public List<PropertyDTO> getAllProperties() {
         List<PropertyDTO> properties = new ArrayList<>();
         try {
-            var ps = connection.prepareStatement("SELECT Pro_id,Price FROM property");
+            var ps = connection.prepareStatement("SELECT * FROM property");
             var rs = ps.executeQuery();
             while (rs.next()) {
-                properties.add(new PropertyDTO(rs.getString(1), rs.getString(2)));
+                properties.add(new PropertyDTO(
+                        rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,4 +120,39 @@ public final class PaymentDAOIMPL implements PaymentDAO {
         }
         return customers;
     }
+
+    @Override
+    public boolean updatePropertyStatus(String proId) {
+        try {
+            var ps = connection.prepareStatement("UPDATE property SET Status = 'Sold' WHERE Pro_id = ?");
+            ps.setString(1, proId);
+            return ps.executeUpdate() != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateAppointmentStatus(String cusId) {
+        try {
+            var selectPs = connection.prepareStatement("SELECT App_id FROM customer WHERE Cus_id = ?");
+            selectPs.setString(1, cusId);
+            var rs = selectPs.executeQuery();
+
+            boolean updateSuccessful = false;
+
+            while (rs.next()) {
+                String appId = rs.getString("App_id");
+                var updatePs = connection.prepareStatement("UPDATE appointment SET Status = 'Completed' WHERE App_id = ?");
+                updatePs.setString(1, appId);
+                updateSuccessful = updatePs.executeUpdate() != 0;
+            }
+            return updateSuccessful;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

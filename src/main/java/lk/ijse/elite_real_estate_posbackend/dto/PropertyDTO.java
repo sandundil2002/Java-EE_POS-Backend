@@ -15,9 +15,4 @@ public class PropertyDTO {
     private String price;
     private String perches;
     private String status;
-
-    public PropertyDTO(String proId, String price) {
-        this.proId = proId;
-        this.price = price;
-    }
 }

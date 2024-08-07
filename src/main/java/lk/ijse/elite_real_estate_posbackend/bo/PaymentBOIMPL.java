@@ -30,4 +30,14 @@ public final class PaymentBOIMPL implements PaymentBO {
     public List<CustomerDTO> getAllCustomers() {
         return paymentDAO.getAllCustomers();
     }
+
+    @Override
+    public boolean updatePropertyStatus(String proId) {
+        return paymentDAO.updatePropertyStatus(proId);
+    }
+
+    @Override
+    public boolean updateAppointmentStatus(String cusId) {
+        return paymentDAO.updateAppointmentStatus(cusId);
+    }
 }

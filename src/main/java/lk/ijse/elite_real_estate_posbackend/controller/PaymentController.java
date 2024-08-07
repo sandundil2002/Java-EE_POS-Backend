@@ -31,6 +31,8 @@ public class PaymentController extends HttpServlet {
             PaymentDTO payment = jsonb.fromJson(req.getReader(), PaymentDTO.class);
 
             writer.write(paymentBOIMPL.savePayment(payment));
+            updatePropertyStatus(payment.getProId());
+            updateAppointmentStatus(payment.getCusId());
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -62,6 +64,14 @@ public class PaymentController extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
+    }
+
+    private void updatePropertyStatus(String proId) {
+        paymentBOIMPL.updatePropertyStatus(proId);
+    }
+
+    private void updateAppointmentStatus(String cusId) {
+         paymentBOIMPL.updateAppointmentStatus(cusId);
     }
 
 }

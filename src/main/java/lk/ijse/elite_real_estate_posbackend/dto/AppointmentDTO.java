@@ -15,4 +15,5 @@ public class AppointmentDTO {
     private String cusName;
     private String cusMobile;
     private String dateTime;
+    private String status;
 }

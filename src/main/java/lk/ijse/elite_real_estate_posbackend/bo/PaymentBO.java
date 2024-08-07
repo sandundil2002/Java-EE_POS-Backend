@@ -11,4 +11,6 @@ public sealed interface PaymentBO permits PaymentBOIMPL {
     String generatePaymentID();
     List<PropertyDTO> getAllProperties();
     List<CustomerDTO> getAllCustomers();
+    boolean updatePropertyStatus(String proId);
+    boolean updateAppointmentStatus(String cusId);
 }

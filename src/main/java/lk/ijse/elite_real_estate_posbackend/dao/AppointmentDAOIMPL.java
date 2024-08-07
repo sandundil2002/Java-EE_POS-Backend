@@ -25,7 +25,8 @@ public final class AppointmentDAOIMPL implements AppointmentDAO {
                         rs.getString("Adm_id"),
                         rs.getString("Cus_name"),
                         rs.getString("Cus_mobile"),
-                        rs.getString("Date_time")
+                        rs.getString("Date_time"),
+                        rs.getString("Status")
                 );
                 appointments.add(appointment);
             }
@@ -38,12 +39,13 @@ public final class AppointmentDAOIMPL implements AppointmentDAO {
     @Override
     public String saveAppointment(AppointmentDTO appointment) {
         try {
-            var ps = connection.prepareStatement("INSERT INTO appointment (App_id,Adm_id,Cus_name,Cus_mobile,Date_time) VALUES(?,?,?,?,?)");
+            var ps = connection.prepareStatement("INSERT INTO appointment (App_id,Adm_id,Cus_name,Cus_mobile,Date_time,Status) VALUES(?,?,?,?,?,?)");
             ps.setString(1, appointment.getAppId());
             ps.setString(2, appointment.getAdmId());
             ps.setString(3, appointment.getCusName());
             ps.setString(4, appointment.getCusMobile());
             ps.setString(5, appointment.getDateTime());
+            ps.setString(6, appointment.getStatus());
 
             if (ps.executeUpdate() != 0) {
                 return "Appointment saved successful";
@@ -59,12 +61,13 @@ public final class AppointmentDAOIMPL implements AppointmentDAO {
     @Override
     public boolean updateAppointment(String appId, AppointmentDTO appointment) {
         try {
-            var ps = connection.prepareStatement("UPDATE appointment SET Adm_id=?,Cus_name=?,Cus_mobile=?,Date_time=? WHERE App_id=?");
+            var ps = connection.prepareStatement("UPDATE appointment SET Adm_id=?,Cus_name=?,Cus_mobile=?,Date_time=?,Status=? WHERE App_id=?");
             ps.setString(1, appointment.getAdmId());
             ps.setString(2, appointment.getCusName());
             ps.setString(3, appointment.getCusMobile());
             ps.setString(4, appointment.getDateTime());
-            ps.setString(5, appId);
+            ps.setString(5, appointment.getStatus());
+            ps.setString(6, appId);
 
             return ps.executeUpdate() != 0;
         }catch (SQLException e){
@@ -87,6 +90,7 @@ public final class AppointmentDAOIMPL implements AppointmentDAO {
                 appointmentDTO.setCusName(rst.getString("Cus_name"));
                 appointmentDTO.setCusMobile(rst.getString("Cus_mobile"));
                 appointmentDTO.setDateTime(rst.getString("Date_time"));
+                appointmentDTO.setStatus(rst.getString("Status"));
             }
             return appointmentDTO;
         } catch (Exception e){
