@@ -14,4 +14,9 @@ public class CustomerDTO {
     private String address;
     private String mobile;
     private String email;
+
+    public CustomerDTO(String cusId, String name) {
+        this.cusId = cusId;
+        this.name = name;
+    }
 }

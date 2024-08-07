@@ -7,9 +7,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.elite_real_estate_posbackend.bo.PaymentBOIMPL;
+import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 import lk.ijse.elite_real_estate_posbackend.dto.PaymentDTO;
+import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
 
-@WebServlet(urlPatterns = "/payment", loadOnStartup = 1)
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@WebServlet(urlPatterns = "/payment/*", loadOnStartup = 1)
 public class PaymentController extends HttpServlet {
     private final PaymentBOIMPL paymentBOIMPL = new PaymentBOIMPL();
 
@@ -30,4 +37,31 @@ public class PaymentController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        try (var writer = resp.getWriter()) {
+            Jsonb jsonb = JsonbBuilder.create();
+
+            List<PropertyDTO> properties = paymentBOIMPL.getAllProperties();
+            List<CustomerDTO> customers = paymentBOIMPL.getAllCustomers();
+            List<String> generatedId = Collections.singletonList(paymentBOIMPL.generatePaymentID());
+
+            System.out.println("Properties: " + properties);
+            System.out.println("Customers: " + customers);
+            System.out.println("Generated ID: " + generatedId);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("properties", properties);
+            result.put("customers", customers);
+            result.put("paymentId", generatedId);
+
+            writer.write(jsonb.toJson(result));
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+        }
+    }
+
 }
