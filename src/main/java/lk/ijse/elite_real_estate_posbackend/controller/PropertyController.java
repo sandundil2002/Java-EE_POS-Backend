@@ -10,8 +10,11 @@ import lk.ijse.elite_real_estate_posbackend.bo.PropertyBOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@WebServlet(urlPatterns = "/property", loadOnStartup = 1)
+@WebServlet(urlPatterns = "/property/*", loadOnStartup = 1)
 public class PropertyController extends HttpServlet {
     private final PropertyBOIMPL propertyBOImpl = new PropertyBOIMPL();
 
@@ -34,35 +37,60 @@ public class PropertyController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
-        try (var write = resp.getWriter()) {
-            var propertyId = req.getParameter("proId");
+        try (var writer = resp.getWriter()) {
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                writer.write("Property ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String propertyId = pathInfo.substring(1);
+            if (propertyId.isEmpty()) {
+                writer.write("Property ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
             Jsonb jsonb = JsonbBuilder.create();
             PropertyDTO property = jsonb.fromJson(req.getReader(), PropertyDTO.class);
 
             if (propertyBOImpl.updateProperty(propertyId, property)) {
-                write.write("Property update successful");
+                writer.write("Property update successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {
-                write.write("Property update failed");
+                writer.write("Property update failed");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        try (var writer = resp.getWriter()) {
-            var propertyId = req.getParameter("proId");
+        var propertyId = req.getParameter("proId");
 
-            var property = propertyBOImpl.searchProperty(propertyId);
-            if (property != null) {
-                Jsonb jsonb = JsonbBuilder.create();
-                writer.write(jsonb.toJson(property));
+        try (var writer = resp.getWriter()) {
+            Jsonb jsonb = JsonbBuilder.create();
+            resp.setContentType("application/json");
+            if (propertyId != null) {
+                var property = propertyBOImpl.searchProperty(propertyId);
+                if (property != null) {
+                    writer.write(jsonb.toJson(property));
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    writer.write("{\"error\": \"Property not found\"}");
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
             } else {
-                writer.write("Property not found");
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                List<PropertyDTO> properties = propertyBOImpl.getAllProperties();
+                List<String> supplierIds = propertyBOImpl.getSupplierIds();
+                Map<String, Object> result = new HashMap<>();
+                result.put("properties", properties);
+                result.put("supplierIds", supplierIds);
+                writer.write(jsonb.toJson(result));
+                resp.setStatus(HttpServletResponse.SC_OK);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -72,7 +100,22 @@ public class PropertyController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try (var writer = resp.getWriter()) {
-            var propertyId = req.getParameter("proId");
+            String pathInfo = req.getPathInfo();
+
+            if (pathInfo == null || pathInfo.equals("/")) {
+                writer.write("Property ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String[] split = pathInfo.split("/");
+            if (split.length != 2) {
+                writer.write("Invalid property ID");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String propertyId = split[1];
 
             if (propertyBOImpl.deleteProperty(propertyId)) {
                 writer.write("Property deleted successful");

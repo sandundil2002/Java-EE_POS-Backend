@@ -3,8 +3,15 @@ package lk.ijse.elite_real_estate_posbackend.bo;
 import lk.ijse.elite_real_estate_posbackend.dao.SupplierDAOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.SupplierDTO;
 
+import java.util.List;
+
 public final class SupplierBOIMPL implements SupplierBO {
     private final SupplierDAOIMPL supplierDAO = new SupplierDAOIMPL();
+
+    @Override
+    public List<SupplierDTO> getAllSuppliers() {
+        return supplierDAO.getAllSuppliers();
+    }
 
     @Override
     public String saveSupplier(SupplierDTO supplier) {
@@ -24,5 +31,10 @@ public final class SupplierBOIMPL implements SupplierBO {
     @Override
     public boolean deleteSupplier(String supplierId ) {
         return supplierDAO.deleteSupplier(supplierId);
+    }
+
+    @Override
+    public List<String> getAdminIds() {
+        return supplierDAO.getAdminIds();
     }
 }

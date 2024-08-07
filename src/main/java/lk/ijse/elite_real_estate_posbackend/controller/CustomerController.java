@@ -40,9 +40,23 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         try (var write = resp.getWriter()) {
-            var customerId = req.getParameter("cusId");
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                write.write("Customer ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String customerId = pathInfo.substring(1);
+            if (customerId.isEmpty()) {
+                write.write("Customer ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
             Jsonb jsonb = JsonbBuilder.create();
             CustomerDTO customer = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+            System.out.println("Received customer: " + customer.toString());
 
             if (customerBOIMPL.updateCustomer(customerId, customer)) {
                 write.write("Customer update successful");
@@ -62,6 +76,7 @@ public class CustomerController extends HttpServlet {
 
         try (var writer = resp.getWriter()) {
             Jsonb jsonb = JsonbBuilder.create();
+            resp.setContentType("application/json");
 
             if (customerId != null) {
                 var customer = customerBOIMPL.searchCustomer(customerId);
@@ -69,7 +84,7 @@ public class CustomerController extends HttpServlet {
                     writer.write(jsonb.toJson(customer));
                     resp.setStatus(HttpServletResponse.SC_OK);
                 } else {
-                    writer.write("Customer not found");
+                    writer.write("{\"error\": \"Customer not found\"}");
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 }
             } else {
@@ -90,7 +105,22 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try (var writer = resp.getWriter()) {
-            var customerId = req.getParameter("cusId");
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                writer.write("Customer ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String [] split = pathInfo.split("/");
+            if (split.length != 2) {
+                writer.write("Invalid Customer ID");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String customerId = split[1];
+
             if (customerBOIMPL.deleteCustomer(customerId)) {
                 writer.write("Customer Delete successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);

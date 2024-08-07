@@ -14,4 +14,5 @@ public class PropertyDTO {
     private String address;
     private String price;
     private String perches;
+    private String status;
 }

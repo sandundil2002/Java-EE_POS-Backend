@@ -10,8 +10,11 @@ import lk.ijse.elite_real_estate_posbackend.bo.SupplierBOIMPL;
 import lk.ijse.elite_real_estate_posbackend.dto.SupplierDTO;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@WebServlet(urlPatterns = "/supplier", loadOnStartup = 1)
+@WebServlet(urlPatterns = "/supplier/*", loadOnStartup = 1)
 public class SupplierController extends HttpServlet {
     private final SupplierBOIMPL supplierBOImpl = new SupplierBOIMPL();
 
@@ -35,7 +38,20 @@ public class SupplierController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         try (var write = resp.getWriter()) {
-            var supplierId = req.getParameter("supId");
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                write.write("Supplier ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String supplierId = pathInfo.substring(1);
+            if (supplierId.isEmpty()) {
+                write.write("Supplier ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
             Jsonb jsonb = JsonbBuilder.create();
             SupplierDTO supplier = jsonb.fromJson(req.getReader(), SupplierDTO.class);
 
@@ -54,17 +70,29 @@ public class SupplierController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        try (var writer = resp.getWriter()) {
-            var supplierId = req.getParameter("supId");
+        String supplierId = req.getParameter("supId");
 
-            var supplier = supplierBOImpl.searchSupplier(supplierId);
-            if (supplier != null) {
-                Jsonb jsonb = JsonbBuilder.create();
-                writer.write(jsonb.toJson(supplier));
-                resp.setStatus(HttpServletResponse.SC_OK);
+        try (var writer = resp.getWriter()) {
+            Jsonb jsonb = JsonbBuilder.create();
+            resp.setContentType("application/json");
+
+            if (supplierId != null) {
+                var supplier = supplierBOImpl.searchSupplier(supplierId);
+                if (supplier != null) {
+                    writer.write(jsonb.toJson(supplier));
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    writer.write("{\"error\": \"Supplier not found\"}");
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
             } else {
-                writer.write("Supplier not found");
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                List<SupplierDTO> suppliers = supplierBOImpl.getAllSuppliers();
+                List<String> adminIds = supplierBOImpl.getAdminIds();
+                Map<String, Object> result = new HashMap<>();
+                result.put("suppliers", suppliers);
+                result.put("adminIds", adminIds);
+                writer.write(jsonb.toJson(result));
+                resp.setStatus(HttpServletResponse.SC_OK);
             }
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -75,7 +103,21 @@ public class SupplierController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try (var writer = resp.getWriter()) {
-            var supplierId = req.getParameter("supId");
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                writer.write("Supplier ID is missing");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String[] split = pathInfo.split("/");
+            if (split.length != 2) {
+                writer.write("Invalid supplier ID");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            String supplierId = split[1];
 
             if (supplierBOImpl.deleteSupplier(supplierId)) {
                 writer.write("Supplier deleted successfully");

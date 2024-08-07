@@ -54,7 +54,6 @@ public class AppointmentController extends HttpServlet {
 
             Jsonb jsonb = JsonbBuilder.create();
             AppointmentDTO appointment = jsonb.fromJson(req.getReader(), AppointmentDTO.class);
-            System.out.println("Received appointment: " + appointment.toString());
 
             if (appointmentBOImpl.updateAppointment(appointmentId, appointment)) {
                 writer.write("Appointment update successful");
@@ -70,7 +69,7 @@ public class AppointmentController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String appointmentId = req.getParameter("appId");
 
         try (var writer = resp.getWriter()) {
