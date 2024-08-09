@@ -14,7 +14,7 @@ Here're some of the project's best features:
 *   Process Payments: Record and update payment details.
 *   Transaction Management: Ensures data consistency with transactional operations.
 
-<h2>🧐 Getting Started</h2>
+<h2>😊 Getting Started</h2>
 
 Prerequisites
 
@@ -22,6 +22,15 @@ Prerequisites
    * Apache Maven 3.6+
    * An IDE like IntelliJ IDEA, Eclipse, or NetBeans
    * MySQL Database
+
+<h2>😎 API Documentation </h2>
+
+Comprehensive API documentation is available via Postman.
+
+https://documenter.getpostman.com/view/35384990/2sA3s3GAYu
+
+This link provides access to all the API endpoints with detailed information about request parameters, responses, and error codes.
+
 
 <h2>🛠️ Installation Steps:</h2>
 
