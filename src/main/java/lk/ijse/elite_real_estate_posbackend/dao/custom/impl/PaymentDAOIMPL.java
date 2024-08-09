@@ -5,6 +5,8 @@ import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 import lk.ijse.elite_real_estate_posbackend.dto.PaymentDTO;
 import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
 import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class PaymentDAOIMPL implements PaymentDAO {
     private final Connection connection = ConnectionUtil.getInstance().getConnection();
+    static Logger logger = LoggerFactory.getLogger(ConnectionUtil.class);
 
     @Override
     public String savePayment(PaymentDTO payment) {
@@ -29,25 +32,30 @@ public class PaymentDAOIMPL implements PaymentDAO {
 
             if (ps.executeUpdate() == 0) {
                 connection.rollback();
+                logger.error("Failed to save payment");
                 return "Failed to save payment";
             }
 
             if (!updatePropertyStatus(payment.getProId())) {
                 connection.rollback();
+                logger.error("Failed to update property status");
                 return "Failed to update property status";
             }
 
             if (!updateAppointmentStatus(payment.getCusId())) {
                 connection.rollback();
+                logger.error("Failed to update appointment status");
                 return "Failed to update appointment status";
             }
 
             connection.commit();
+            logger.info("Payment saved successfully");
             return "Payment saved successfully";
         } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException rollbackException) {
+                logger.error("Error occurred while saving payment");
                 rollbackException.printStackTrace();
             }
             e.printStackTrace();
@@ -104,7 +112,6 @@ public class PaymentDAOIMPL implements PaymentDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("properties = " + properties);
         return properties;
     }
 
@@ -120,7 +127,6 @@ public class PaymentDAOIMPL implements PaymentDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("customers = " + customers);
         return customers;
     }
 
@@ -157,5 +163,4 @@ public class PaymentDAOIMPL implements PaymentDAO {
             return false;
         }
     }
-
 }

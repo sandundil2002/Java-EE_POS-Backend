@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.elite_real_estate_posbackend.bo.BOFactory;
 import lk.ijse.elite_real_estate_posbackend.bo.custom.PropertyBO;
 import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
+import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,11 +21,13 @@ import java.util.Map;
 @WebServlet(urlPatterns = "/property/*", loadOnStartup = 1)
 public class PropertyController extends HttpServlet {
     private final PropertyBO propertyBO = BOFactory.getInstance().getBO(BOFactory.BOTypes.PROPERTY);
+    static Logger logger = LoggerFactory.getLogger(ConnectionUtil.class);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (req.getContentType() == null || !req.getContentType().toLowerCase().startsWith("application/json")) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            logger.error("Invalid Content Type");
         }
 
         try (var writer = resp.getWriter()) {
@@ -30,8 +35,10 @@ public class PropertyController extends HttpServlet {
             PropertyDTO property = jsonb.fromJson(req.getReader(), PropertyDTO.class);
             writer.write(propertyBO.saveProperty(property));
             resp.setStatus(HttpServletResponse.SC_CREATED);
+            logger.info("Property Added Successfully");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            logger.error("Failed to Add Property");
             e.printStackTrace();
         }
     }
@@ -43,6 +50,7 @@ public class PropertyController extends HttpServlet {
             if (pathInfo == null || pathInfo.equals("/")) {
                 writer.write("Property ID is missing");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                logger.error("Property ID is missing");
                 return;
             }
 
@@ -50,6 +58,7 @@ public class PropertyController extends HttpServlet {
             if (propertyId.isEmpty()) {
                 writer.write("Property ID is missing");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                logger.error("Property ID is missing");
                 return;
             }
 
@@ -59,11 +68,15 @@ public class PropertyController extends HttpServlet {
             if (propertyBO.updateProperty(propertyId, property)) {
                 writer.write("Property update successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                logger.info("Property Updated Successfully");
             } else {
                 writer.write("Property update failed");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                logger.error("Failed to Update Property");
             }
         } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            logger.error("Failed to Update Property");
             e.printStackTrace();
         }
     }
@@ -80,9 +93,11 @@ public class PropertyController extends HttpServlet {
                 if (property != null) {
                     writer.write(jsonb.toJson(property));
                     resp.setStatus(HttpServletResponse.SC_OK);
+                    logger.info("Property Retrieved Successfully");
                 } else {
                     writer.write("{\"error\": \"Property not found\"}");
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    logger.error("Property not found");
                 }
             } else {
                 List<PropertyDTO> properties = propertyBO.getAllProperties();
@@ -92,9 +107,12 @@ public class PropertyController extends HttpServlet {
                 result.put("supplierIds", supplierIds);
                 writer.write(jsonb.toJson(result));
                 resp.setStatus(HttpServletResponse.SC_OK);
+                logger.info("All Properties Retrieved Successfully");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            logger.error("Failed to Retrieve Properties");
+            e.printStackTrace();
         }
     }
 
@@ -106,6 +124,7 @@ public class PropertyController extends HttpServlet {
             if (pathInfo == null || pathInfo.equals("/")) {
                 writer.write("Property ID is missing");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                logger.error("Property ID is missing");
                 return;
             }
 
@@ -113,6 +132,7 @@ public class PropertyController extends HttpServlet {
             if (split.length != 2) {
                 writer.write("Invalid property ID");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                logger.error("Invalid property ID");
                 return;
             }
 
@@ -121,17 +141,22 @@ public class PropertyController extends HttpServlet {
             if (propertyBO.deleteProperty(propertyId)) {
                 writer.write("Property deleted successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                logger.info("Property Deleted Successfully");
             } else {
                 writer.write("Property deleted failed");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                logger.error("Failed to Delete Property");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            logger.error("Failed to Delete Property");
+            e.printStackTrace();
         }
     }
 
     @Override
     public void destroy() {
+        logger.info("Property Controller Destroyed");
         super.destroy();
     }
 }

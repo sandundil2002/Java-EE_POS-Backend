@@ -61,4 +61,5 @@ CREATE TABLE Payment_details (
                                  FOREIGN KEY (Cus_id) REFERENCES Customer (Cus_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO admin VALUES ('Adm001','Sandun','Galle','0762357995','2580','sandundil2002@gmail.com');
+INSERT INTO admin VALUES ('Adm001','Sandun','Galle','0762357995','2580','sandun@gmail.com');
+INSERT INTO admin VALUES ('Adm002','Dilshan','Mathara','0758997477','8520','dilshan@gmail.com');

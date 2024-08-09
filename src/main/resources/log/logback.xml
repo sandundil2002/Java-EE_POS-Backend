@@ -6,7 +6,7 @@
     </appender>
 
     <appender name="File" class="ch.qos.logback.core.FileAppender">
-        <file>D:/GDSE 68/Second Semester/AAD/Elite_Real_Estate_POS-Backend/src/main/resources/log/app.log</file>
+        <file>D:/GDSE 68/Second Semester/AAD/Elite_Real_Estate_POS-Backend/src/main/resources/log/pos.log</file>
         <append>true</append>
         <encoder>
             <pattern>%d{HH:mm:ss:SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
