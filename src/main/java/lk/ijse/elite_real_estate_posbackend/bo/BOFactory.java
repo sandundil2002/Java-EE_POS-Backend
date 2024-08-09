@@ -1,9 +1,6 @@
 package lk.ijse.elite_real_estate_posbackend.bo;
 
-import lk.ijse.elite_real_estate_posbackend.bo.custom.impl.AdminBOIMPL;
-import lk.ijse.elite_real_estate_posbackend.bo.custom.impl.AppointmentBOIMPL;
-import lk.ijse.elite_real_estate_posbackend.bo.custom.impl.CustomerBOIMPL;
-import lk.ijse.elite_real_estate_posbackend.bo.custom.impl.PropertyBOIMPL;
+import lk.ijse.elite_real_estate_posbackend.bo.custom.impl.*;
 
 public class BOFactory {
     private static BOFactory boFactory;
@@ -29,6 +26,10 @@ public class BOFactory {
                 return (T) new CustomerBOIMPL();
             case ADMIN:
                 return (T) new AdminBOIMPL();
+            case SUPPLIER:
+                return (T) new SupplierBOIMPL();
+            case PAYMENT:
+                return (T) new PaymentBOIMPL();
             default:
                 return null;
         }

@@ -68,7 +68,7 @@ public class AppointmentDAOIMPL implements AppointmentDAO {
             ps.setString(3, appointment.getCusMobile());
             ps.setString(4, appointment.getDateTime());
             ps.setString(5, appointment.getStatus());
-            ps.setString(6, appId);
+            ps.setString(6, appointment.getAppId());
 
             return ps.executeUpdate() != 0;
         }catch (SQLException e){

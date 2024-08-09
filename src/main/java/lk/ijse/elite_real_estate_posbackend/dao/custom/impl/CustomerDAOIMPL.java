@@ -68,7 +68,7 @@ public class CustomerDAOIMPL implements CustomerDAO {
             ps.setString(3, customer.getAddress());
             ps.setString(4, customer.getMobile());
             ps.setString(5, customer.getEmail());
-            ps.setString(6,cusId);
+            ps.setString(6, customer.getCusId());
 
             return ps.executeUpdate() != 0;
         } catch (SQLException e) {

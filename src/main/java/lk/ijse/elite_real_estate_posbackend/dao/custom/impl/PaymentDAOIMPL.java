@@ -104,6 +104,7 @@ public class PaymentDAOIMPL implements PaymentDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("properties = " + properties);
         return properties;
     }
 
@@ -119,6 +120,7 @@ public class PaymentDAOIMPL implements PaymentDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("customers = " + customers);
         return customers;
     }
 

@@ -67,7 +67,7 @@ public class SupplierDAOIMPL implements SupplierDAO {
             ps.setString(3, supplier.getAddress());
             ps.setString(4, supplier.getMobile());
             ps.setString(5, supplier.getEmail());
-            ps.setString(6, supplierId);
+            ps.setString(6, supplier.getSupId());
 
             return ps.executeUpdate() != 0;
         } catch (SQLException e) {

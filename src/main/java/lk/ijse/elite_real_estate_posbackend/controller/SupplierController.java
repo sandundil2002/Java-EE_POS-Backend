@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet(urlPatterns = "/supplier/*", loadOnStartup = 1)
-public class SupplierController extends HttpServlet {
+public class  SupplierController extends HttpServlet {
     private final SupplierBO supplierBO = BOFactory.getInstance().getBO(BOFactory.BOTypes.SUPPLIER);
 
     @Override
