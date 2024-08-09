@@ -1,5 +1,6 @@
-package lk.ijse.elite_real_estate_posbackend.dao;
+package lk.ijse.elite_real_estate_posbackend.dao.custom.impl;
 
+import lk.ijse.elite_real_estate_posbackend.dao.custom.AppointmentDAO;
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.ResultSet;
 
-public final class AppointmentDAOIMPL implements AppointmentDAO {
+public class AppointmentDAOIMPL implements AppointmentDAO {
     private final Connection connection = ConnectionUtil.getInstance().getConnection();
 
     public List<AppointmentDTO> getAllAppointments() {

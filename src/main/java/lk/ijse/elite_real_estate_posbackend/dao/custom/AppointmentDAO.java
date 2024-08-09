@@ -1,10 +1,10 @@
-package lk.ijse.elite_real_estate_posbackend.dao;
+package lk.ijse.elite_real_estate_posbackend.dao.custom;
 
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
 import java.util.List;
 
-public sealed interface AppointmentDAO permits AppointmentDAOIMPL {
+public interface AppointmentDAO {
     List<AppointmentDTO> getAllAppointments();
     String saveAppointment(AppointmentDTO appointment);
     boolean updateAppointment(String appId, AppointmentDTO appointment);

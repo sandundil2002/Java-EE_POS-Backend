@@ -4,7 +4,7 @@ import lk.ijse.elite_real_estate_posbackend.dto.SupplierDTO;
 
 import java.util.List;
 
-public sealed interface SupplierBO permits SupplierBOIMPL{
+public interface SupplierBO {
     List<SupplierDTO> getAllSuppliers();
     String saveSupplier(SupplierDTO supplier);
     boolean updateSupplier(String supplierId, SupplierDTO supplier);

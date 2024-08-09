@@ -4,7 +4,7 @@ import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 
 import java.util.List;
 
-public sealed interface CustomerBO permits CustomerBOIMPL{
+public interface CustomerBO {
     List<CustomerDTO> getAllCustomers();
     String saveCustomer(CustomerDTO customer);
     boolean updateCustomer(String cusId, CustomerDTO customer);

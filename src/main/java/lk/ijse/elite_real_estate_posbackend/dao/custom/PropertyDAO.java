@@ -1,10 +1,10 @@
-package lk.ijse.elite_real_estate_posbackend.dao;
+package lk.ijse.elite_real_estate_posbackend.dao.custom;
 
 import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
 
 import java.util.List;
 
-public sealed interface PropertyDAO permits PropertyDAOIMPL {
+public interface PropertyDAO {
     List<PropertyDTO> getAllProperties();
     String saveProperty(PropertyDTO property);
     boolean updateProperty(String propertyId, PropertyDTO property);

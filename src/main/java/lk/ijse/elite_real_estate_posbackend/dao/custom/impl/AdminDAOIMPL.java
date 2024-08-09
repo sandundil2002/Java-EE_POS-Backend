@@ -1,11 +1,12 @@
-package lk.ijse.elite_real_estate_posbackend.dao;
+package lk.ijse.elite_real_estate_posbackend.dao.custom.impl;
 
+import lk.ijse.elite_real_estate_posbackend.dao.custom.AdminDAO;
 import lk.ijse.elite_real_estate_posbackend.dto.AdminDTO;
 import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
 
 import java.sql.Connection;
 
-public final class AdminDAOIMPL implements AdminDAO {
+public class AdminDAOIMPL implements AdminDAO {
     private final Connection connection = ConnectionUtil.getInstance().getConnection();
 
     @Override

@@ -1,12 +1,13 @@
 package lk.ijse.elite_real_estate_posbackend.bo;
 
-import lk.ijse.elite_real_estate_posbackend.dao.AppointmentDAOIMPL;
+import lk.ijse.elite_real_estate_posbackend.dao.custom.AppointmentDAO;
+import lk.ijse.elite_real_estate_posbackend.dao.DAOFactory;
 import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
 import java.util.List;
 
-public final class AppointmentBOIMPL implements AppointmentBO {
-    private final AppointmentDAOIMPL appointmentDAO = new AppointmentDAOIMPL();
+public class AppointmentBOIMPL implements AppointmentBO {
+    private final AppointmentDAO appointmentDAO = DAOFactory.getInstance().getDAO(DAOFactory.DAOType.APPOINTMENT);
 
     @Override
     public List<AppointmentDTO> getAllAppointments() {

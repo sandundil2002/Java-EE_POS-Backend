@@ -1,10 +1,10 @@
-package lk.ijse.elite_real_estate_posbackend.dao;
+package lk.ijse.elite_real_estate_posbackend.dao.custom;
 
 import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 
 import java.util.List;
 
-public sealed interface CustomerDAO permits CustomerDAOIMPL {
+public interface CustomerDAO {
     List<CustomerDTO> getAllCustomers();
     String saveCustomer(CustomerDTO customer);
     boolean updateCustomer(String cusId, CustomerDTO customer);

@@ -1,12 +1,13 @@
 package lk.ijse.elite_real_estate_posbackend.bo;
 
-import lk.ijse.elite_real_estate_posbackend.dao.PropertyDAOIMPL;
+import lk.ijse.elite_real_estate_posbackend.dao.DAOFactory;
+import lk.ijse.elite_real_estate_posbackend.dao.custom.PropertyDAO;
 import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
 
 import java.util.List;
 
-public final class PropertyBOIMPL implements PropertyBO {
-    private final PropertyDAOIMPL propertyDAO = new PropertyDAOIMPL();
+public class PropertyBOIMPL implements PropertyBO {
+    private final PropertyDAO propertyDAO = DAOFactory.getInstance().getDAO(DAOFactory.DAOType.PROPERTY);
 
     @Override
     public List<PropertyDTO> getAllProperties() {

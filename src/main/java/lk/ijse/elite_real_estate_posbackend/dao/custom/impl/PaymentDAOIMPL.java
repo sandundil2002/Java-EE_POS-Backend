@@ -1,5 +1,6 @@
-package lk.ijse.elite_real_estate_posbackend.dao;
+package lk.ijse.elite_real_estate_posbackend.dao.custom.impl;
 
+import lk.ijse.elite_real_estate_posbackend.dao.custom.PaymentDAO;
 import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 import lk.ijse.elite_real_estate_posbackend.dto.PaymentDTO;
 import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PaymentDAOIMPL implements PaymentDAO {
+public class PaymentDAOIMPL implements PaymentDAO {
     private final Connection connection = ConnectionUtil.getInstance().getConnection();
 
     @Override

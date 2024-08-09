@@ -1,12 +1,13 @@
 package lk.ijse.elite_real_estate_posbackend.bo;
 
-import lk.ijse.elite_real_estate_posbackend.dao.SupplierDAOIMPL;
+import lk.ijse.elite_real_estate_posbackend.dao.DAOFactory;
+import lk.ijse.elite_real_estate_posbackend.dao.custom.SupplierDAO;
 import lk.ijse.elite_real_estate_posbackend.dto.SupplierDTO;
 
 import java.util.List;
 
-public final class SupplierBOIMPL implements SupplierBO {
-    private final SupplierDAOIMPL supplierDAO = new SupplierDAOIMPL();
+public class SupplierBOIMPL implements SupplierBO {
+    private final SupplierDAO supplierDAO = DAOFactory.getInstance().getDAO(DAOFactory.DAOType.SUPPLIER);
 
     @Override
     public List<SupplierDTO> getAllSuppliers() {

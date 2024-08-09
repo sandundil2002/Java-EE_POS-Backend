@@ -4,7 +4,7 @@ import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
 
 import java.util.List;
 
-public sealed interface AppointmentBO permits AppointmentBOIMPL {
+public interface AppointmentBO {
     List<AppointmentDTO> getAllAppointments();
     String saveAppointment(AppointmentDTO appointment);
     boolean updateAppointment(String appId, AppointmentDTO appointment);

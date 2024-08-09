@@ -1,5 +1,6 @@
-package lk.ijse.elite_real_estate_posbackend.dao;
+package lk.ijse.elite_real_estate_posbackend.dao.custom.impl;
 
+import lk.ijse.elite_real_estate_posbackend.dao.custom.CustomerDAO;
 import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 import lk.ijse.elite_real_estate_posbackend.util.ConnectionUtil;
 
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CustomerDAOIMPL implements CustomerDAO {
+public class CustomerDAOIMPL implements CustomerDAO {
     private final Connection connection = ConnectionUtil.getInstance().getConnection();
 
     @Override

@@ -6,7 +6,7 @@ import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
 
 import java.util.List;
 
-public sealed interface PaymentBO permits PaymentBOIMPL {
+public interface PaymentBO {
     String savePayment(PaymentDTO payment);
     String generatePaymentID();
     List<PropertyDTO> getAllProperties();
