@@ -6,7 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lk.ijse.elite_real_estate_posbackend.bo.PaymentBOIMPL;
+import lk.ijse.elite_real_estate_posbackend.bo.BOFactory;
+import lk.ijse.elite_real_estate_posbackend.bo.custom.PaymentBO;
 import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 import lk.ijse.elite_real_estate_posbackend.dto.PaymentDTO;
 import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/payment/*", loadOnStartup = 1)
 public class PaymentController extends HttpServlet {
-    private final PaymentBOIMPL paymentBOIMPL = new PaymentBOIMPL();
+    private final PaymentBO paymentBO = BOFactory.getInstance().getBO(BOFactory.BOTypes.PAYMENT);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
@@ -30,7 +31,7 @@ public class PaymentController extends HttpServlet {
             Jsonb jsonb = JsonbBuilder.create();
             PaymentDTO payment = jsonb.fromJson(req.getReader(), PaymentDTO.class);
 
-            writer.write(paymentBOIMPL.savePayment(payment));
+            writer.write(paymentBO.savePayment(payment));
             updatePropertyStatus(payment.getProId());
             updateAppointmentStatus(payment.getCusId());
             resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -45,9 +46,9 @@ public class PaymentController extends HttpServlet {
         try (var writer = resp.getWriter()) {
             Jsonb jsonb = JsonbBuilder.create();
 
-            List<PropertyDTO> properties = paymentBOIMPL.getAllProperties();
-            List<CustomerDTO> customers = paymentBOIMPL.getAllCustomers();
-            List<String> generatedId = Collections.singletonList(paymentBOIMPL.generatePaymentID());
+            List<PropertyDTO> properties = paymentBO.getAllProperties();
+            List<CustomerDTO> customers = paymentBO.getAllCustomers();
+            List<String> generatedId = Collections.singletonList(paymentBO.generatePaymentID());
 
             System.out.println("Properties: " + properties);
             System.out.println("Customers: " + customers);
@@ -67,11 +68,11 @@ public class PaymentController extends HttpServlet {
     }
 
     private void updatePropertyStatus(String proId) {
-        paymentBOIMPL.updatePropertyStatus(proId);
+        paymentBO.updatePropertyStatus(proId);
     }
 
     private void updateAppointmentStatus(String cusId) {
-         paymentBOIMPL.updateAppointmentStatus(cusId);
+        paymentBO.updateAppointmentStatus(cusId);
     }
 
 }

@@ -6,7 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lk.ijse.elite_real_estate_posbackend.bo.PropertyBOIMPL;
+import lk.ijse.elite_real_estate_posbackend.bo.BOFactory;
+import lk.ijse.elite_real_estate_posbackend.bo.custom.PropertyBO;
 import lk.ijse.elite_real_estate_posbackend.dto.PropertyDTO;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/property/*", loadOnStartup = 1)
 public class PropertyController extends HttpServlet {
-    private final PropertyBOIMPL propertyBOImpl = new PropertyBOIMPL();
+    private final PropertyBO propertyBO = BOFactory.getInstance().getBO(BOFactory.BOTypes.PROPERTY);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -27,7 +28,7 @@ public class PropertyController extends HttpServlet {
         try (var writer = resp.getWriter()) {
             Jsonb jsonb = JsonbBuilder.create();
             PropertyDTO property = jsonb.fromJson(req.getReader(), PropertyDTO.class);
-            writer.write(propertyBOImpl.saveProperty(property));
+            writer.write(propertyBO.saveProperty(property));
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -55,7 +56,7 @@ public class PropertyController extends HttpServlet {
             Jsonb jsonb = JsonbBuilder.create();
             PropertyDTO property = jsonb.fromJson(req.getReader(), PropertyDTO.class);
 
-            if (propertyBOImpl.updateProperty(propertyId, property)) {
+            if (propertyBO.updateProperty(propertyId, property)) {
                 writer.write("Property update successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {
@@ -75,7 +76,7 @@ public class PropertyController extends HttpServlet {
             Jsonb jsonb = JsonbBuilder.create();
             resp.setContentType("application/json");
             if (propertyId != null) {
-                var property = propertyBOImpl.searchProperty(propertyId);
+                var property = propertyBO.searchProperty(propertyId);
                 if (property != null) {
                     writer.write(jsonb.toJson(property));
                     resp.setStatus(HttpServletResponse.SC_OK);
@@ -84,8 +85,8 @@ public class PropertyController extends HttpServlet {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } else {
-                List<PropertyDTO> properties = propertyBOImpl.getAllProperties();
-                List<String> supplierIds = propertyBOImpl.getSupplierIds();
+                List<PropertyDTO> properties = propertyBO.getAllProperties();
+                List<String> supplierIds = propertyBO.getSupplierIds();
                 Map<String, Object> result = new HashMap<>();
                 result.put("properties", properties);
                 result.put("supplierIds", supplierIds);
@@ -117,7 +118,7 @@ public class PropertyController extends HttpServlet {
 
             String propertyId = split[1];
 
-            if (propertyBOImpl.deleteProperty(propertyId)) {
+            if (propertyBO.deleteProperty(propertyId)) {
                 writer.write("Property deleted successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {

@@ -6,8 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lk.ijse.elite_real_estate_posbackend.bo.CustomerBOIMPL;
-import lk.ijse.elite_real_estate_posbackend.dto.AppointmentDTO;
+import lk.ijse.elite_real_estate_posbackend.bo.BOFactory;
+import lk.ijse.elite_real_estate_posbackend.bo.custom.CustomerBO;
 import lk.ijse.elite_real_estate_posbackend.dto.CustomerDTO;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/customer/*", loadOnStartup = 1)
 public class CustomerController extends HttpServlet {
-    private final CustomerBOIMPL customerBOIMPL = new CustomerBOIMPL();
+    private final CustomerBO customerBO = BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -29,7 +29,7 @@ public class CustomerController extends HttpServlet {
             Jsonb jsonb = JsonbBuilder.create();
             CustomerDTO customer = jsonb.fromJson(req.getReader(), CustomerDTO.class);
 
-            writer.write(customerBOIMPL.saveCustomer(customer));
+            writer.write(customerBO.saveCustomer(customer));
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -58,7 +58,7 @@ public class CustomerController extends HttpServlet {
             CustomerDTO customer = jsonb.fromJson(req.getReader(), CustomerDTO.class);
             System.out.println("Received customer: " + customer.toString());
 
-            if (customerBOIMPL.updateCustomer(customerId, customer)) {
+            if (customerBO.updateCustomer(customerId, customer)) {
                 write.write("Customer update successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {
@@ -79,7 +79,7 @@ public class CustomerController extends HttpServlet {
             resp.setContentType("application/json");
 
             if (customerId != null) {
-                var customer = customerBOIMPL.searchCustomer(customerId);
+                var customer = customerBO.searchCustomer(customerId);
                 if (customer != null) {
                     writer.write(jsonb.toJson(customer));
                     resp.setStatus(HttpServletResponse.SC_OK);
@@ -88,8 +88,8 @@ public class CustomerController extends HttpServlet {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 }
             } else {
-                List<CustomerDTO> customers = customerBOIMPL.getAllCustomers();
-                List<String> appointmentIds = customerBOIMPL.getAppointmentIds();
+                List<CustomerDTO> customers = customerBO.getAllCustomers();
+                List<String> appointmentIds = customerBO.getAppointmentIds();
                 Map<String, Object> result = new HashMap<>();
                 result.put("customers", customers);
                 result.put("appointments", appointmentIds);
@@ -121,7 +121,7 @@ public class CustomerController extends HttpServlet {
 
             String customerId = split[1];
 
-            if (customerBOIMPL.deleteCustomer(customerId)) {
+            if (customerBO.deleteCustomer(customerId)) {
                 writer.write("Customer Delete successful");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {

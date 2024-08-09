@@ -1,5 +1,6 @@
-package lk.ijse.elite_real_estate_posbackend.bo;
+package lk.ijse.elite_real_estate_posbackend.bo.custom.impl;
 
+import lk.ijse.elite_real_estate_posbackend.bo.custom.AdminBO;
 import lk.ijse.elite_real_estate_posbackend.dao.custom.AdminDAO;
 
 import lk.ijse.elite_real_estate_posbackend.dao.DAOFactory;

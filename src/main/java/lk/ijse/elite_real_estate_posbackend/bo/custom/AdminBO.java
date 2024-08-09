@@ -1,4 +1,4 @@
-package lk.ijse.elite_real_estate_posbackend.bo;
+package lk.ijse.elite_real_estate_posbackend.bo.custom;
 
 import lk.ijse.elite_real_estate_posbackend.dto.AdminDTO;
 
